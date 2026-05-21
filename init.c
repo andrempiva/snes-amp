@@ -8,13 +8,13 @@ int init(int argc, char *argv[]) {
     InitAction *action = init_get_action(argc, argv);
     if (action->type == NULL_ACTION) {
         printf("Error: Invalid command line arguments\n");
-        return 1;
+        exit(1);
     }
     if (init_run_action(action) != 0) {
         printf("Error: Failed to run action\n");
+        exit(2);
     }
 
-    free(action->s_param);
     free(action);
 
     return 0;
@@ -25,13 +25,13 @@ InitAction* init_get_action(int argc, char *argv[]) {
     action->type = NULL_ACTION;
 
     if (strcmp(argv[1], "-o") == 0) {
-        // -o <rom_file>
+        // -o <rom_file_path>
         if (argc == 3) {
-            char *rom_file = argv[2];
+            char *rom_file_path = argv[2];
             action->type = LOAD_ROM_FILE;
-            action->s_param = rom_file;
+            action->s_param = rom_file_path;
         } else {
-            printf("Usage: %s -o <rom_file>\n", argv[0]);
+            printf("Usage: %s -o <rom_file_path>\n", argv[0]);
         }
     } else if (strcmp(argv[1], "-t") == 0) {
         // -t <rom_file_number>
@@ -50,16 +50,12 @@ InitAction* init_get_action(int argc, char *argv[]) {
 int init_run_action(InitAction *action) {
     switch (action->type) {
         case LOAD_ROM_FILE:
-            printf("Loading ROM file: %s\n", action->s_param);
-            load_rom_file(action->s_param);
-            break;
+            return load_rom_file(action->s_param);
         case LOAD_ROM_NUMBER:
-            printf("Loading ROM file number: %d\n", action->i_param);
-            load_rom_number(action->i_param);
-            break;
+            return load_rom_number(action->i_param);
         case NULL_ACTION:
             return 1;
     }
 
-    return 0;
+    return -1;
 }

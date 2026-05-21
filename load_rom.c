@@ -43,6 +43,8 @@ int load_rom_file(char *rom_file_path) {
 }
 
 int load_rom_number(int rom_file_number) {
+    printf("Loading ROM file number: %d\n", rom_file_number);
+
     if (rom_file_number < 0 || rom_file_number >= TEST_ROM_LENGTH) {
         printf("Error: Invalid ROM file number: %d\n", rom_file_number);
         printf("Must be between 0 and %d\n", TEST_ROM_LENGTH - 1);
