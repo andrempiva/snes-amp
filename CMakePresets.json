@@ -1,0 +1,16 @@
+{
+    "version": 8,
+    "configurePresets": [
+        {
+            "name": "Debug",
+            "displayName": "Debug",
+            "description": "Using compiler: clang",
+            "binaryDir": "${sourceDir}/build/Debug",
+            "cacheVariables": {
+                "CMAKE_INSTALL_PREFIX": "${sourceDir}/install/Debug",
+                "CMAKE_C_COMPILER": "/usr/bin/clang",
+                "CMAKE_BUILD_TYPE": "Debug"
+            }
+        }
+    ]
+}

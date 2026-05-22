@@ -15,7 +15,7 @@ const char* predefined_roms[] = {
 };
 
 const int PREDEF_ROMS_AMOUNT = sizeof(predefined_roms) / sizeof(predefined_roms[0]);
-const char PREDEF_ROMS_FOLDER[] = "./roms/";
+const char PREDEF_ROMS_FOLDER[] = "../roms/";
 
 char* resolve_predefined_rom_file_path(int rom_file_number) {
     printf("Loading ROM file number: %d\n", rom_file_number);
