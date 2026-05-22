@@ -1,16 +1,18 @@
-#include "init.h"
-#include "load_rom.h"
-#include <stdlib.h>
 #include <stdio.h>
+#include <stdlib.h>
 #include <string.h>
 
+#include "cartridge.h"
+#include "init.h"
+#include "rom_loader.h"
+
 int init(int argc, char *argv[]) {
-    InitAction *action = init_get_action(argc, argv);
-    if (action->type == NULL_ACTION) {
+    InitAction *action = init_action_create(argc, argv);
+    if (action->type == ACTION_NULL) {
         printf("Error: Invalid command line arguments\n");
         exit(1);
     }
-    if (init_run_action(action) != 0) {
+    if (init_action_run(action) != 0) {
         printf("Error: Failed to run action\n");
         exit(2);
     }
@@ -20,15 +22,15 @@ int init(int argc, char *argv[]) {
     return 0;
 }
 
-InitAction* init_get_action(int argc, char *argv[]) {
+InitAction* init_action_create(int argc, char *argv[]) {
     InitAction *action = malloc(sizeof(InitAction));
-    action->type = NULL_ACTION;
+    action->type = ACTION_NULL;
 
     if (strcmp(argv[1], "-o") == 0) {
         // -o <rom_file_path>
         if (argc == 3) {
             char *rom_file_path = argv[2];
-            action->type = LOAD_ROM_FILE;
+            action->type = ACTION_LOAD_ROM_FILE;
             action->s_param = rom_file_path;
         } else {
             printf("Usage: %s -o <rom_file_path>\n", argv[0]);
@@ -37,7 +39,7 @@ InitAction* init_get_action(int argc, char *argv[]) {
         // -t <rom_file_number>
         if (argc == 3) {
             int rom_file_number = atoi(argv[2]);
-            action->type = LOAD_ROM_NUMBER;
+            action->type = ACTION_LOAD_ROM_NUMBER;
             action->i_param = rom_file_number;
         } else {
             printf("Usage: %s -t <rom_file_number>\n", argv[0]);
@@ -47,15 +49,63 @@ InitAction* init_get_action(int argc, char *argv[]) {
     return action;
 }
 
-int init_run_action(InitAction *action) {
+int init_action_run(InitAction *action) {
     switch (action->type) {
-        case LOAD_ROM_FILE:
-            return load_rom_file(action->s_param);
-        case LOAD_ROM_NUMBER:
-            return load_rom_number(action->i_param);
-        case NULL_ACTION:
-            return 1;
+        case ACTION_LOAD_ROM_FILE:
+        case ACTION_LOAD_ROM_NUMBER:
+            return init_load_rom(action);
+
+        // Other Actions...
+        // ...
+
+        // No action.
+        case ACTION_NULL: return 1;
+
+        default:
+            printf("Error: Invalid action type: %d\n", action->type);
+            return -1;
+    }
+}
+
+int init_load_rom(InitAction *action) {
+    char *rom_file_path = NULL;
+    FILE* file = NULL;
+
+    if (action->type == ACTION_LOAD_ROM_FILE) {
+        file = load_rom_file(action->s_param);
+    } else if (action->type == ACTION_LOAD_ROM_NUMBER) {
+        file = load_rom_number(action->i_param);
+    } else {
+        printf("Error: Undefined action type on loading ROM: %d.\n", action->type);
+        exit(1);
     }
 
-    return -1;
+    if (file == NULL) {
+        printf("Error: Failed to load ROM file.\n");
+        exit(1);
+    }
+
+    Cartridge *cartridge = create_cartridge(file);
+    if (cartridge == NULL) {
+        printf("Error: Failed to create cartridge.\n");
+        exit(1);
+    }
+
+    // Clean up
+    fclose(file);
+    if (action->type == ACTION_LOAD_ROM_NUMBER) {
+        free(rom_file_path);
+    }
+
+    // <in_development>
+    printf("ROM loaded successfully.\n");
+    printf("Cartridge created successfully.\n");
+    printf("Nothing to do at this point.\n");
+    printf("In development...\n");
+
+    // Clean up
+    destroy_cartridge(cartridge);
+    // </in_development>
+
+    return 0;
 }

@@ -1,15 +1,20 @@
 typedef enum {
-    NULL_ACTION,
-    LOAD_ROM_FILE,
-    LOAD_ROM_NUMBER,
+    ACTION_NULL,
+    ACTION_LOAD_ROM_FILE,
+    ACTION_LOAD_ROM_NUMBER,
 } InitActionType;
 
 typedef struct {
     InitActionType type;
+    // string parameter
     char *s_param;
+    // integer parameter
     int i_param;
 } InitAction;
 
 int init(int argc, char *argv[]);
-InitAction* init_get_action(int argc, char *argv[]);
-int init_run_action(InitAction *action);
+
+InitAction* init_action_create(int argc, char *argv[]);
+int init_action_run(InitAction *action);
+
+int init_load_rom(InitAction *action);

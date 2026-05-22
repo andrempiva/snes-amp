@@ -29,6 +29,7 @@ Cartridge* create_cartridge(FILE *file) {
     return cartridge;
 }
 
+
 void destroy_cartridge(Cartridge *cartridge) {
     free(cartridge->bytes);
     free(cartridge);
@@ -46,5 +47,6 @@ int is_rom_headered(long size) {
     }
 
     // invalid ROM size
+    printf("Error: Unable to determine if ROM is headered or unheadered. Invalid ROM size.\n");
     return -1;
 }

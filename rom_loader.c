@@ -1,10 +1,12 @@
-#include "rom_loader.h"
-#include "cartridge.h"
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
 
-const char* test_roms[] = {
+#include "cartridge.h"
+#include "rom_loader.h"
+
+// Predefined ROM data
+const char* predefined_roms[] = {
     "F-Zero (J).smc",
     "Final Fantasy IV (J).smc",
     "Super Mario World (U) [!].smc",
@@ -12,50 +14,56 @@ const char* test_roms[] = {
     "Super Metroid (JU) [!].smc",
 };
 
-const int TEST_ROM_LENGTH = sizeof(test_roms) / sizeof(test_roms[0]);
-const char ROM_LIB_FOLDER[] = "./roms/";
+const int PREDEF_ROMS_AMOUNT = sizeof(predefined_roms) / sizeof(predefined_roms[0]);
+const char PREDEF_ROMS_FOLDER[] = "./roms/";
 
-int load_rom_file(char *rom_file_path) {
+char* resolve_predefined_rom_file_path(int rom_file_number) {
+    printf("Loading ROM file number: %d\n", rom_file_number);
+
+    if (rom_file_number < 0 || rom_file_number >= PREDEF_ROMS_AMOUNT) {
+        printf("Error: Invalid ROM file number: %d\n", rom_file_number);
+        printf("Must be between 0 and %d\n", PREDEF_ROMS_AMOUNT - 1);
+        exit(1);
+    }
+
+    char *rom_file = (char*)predefined_roms[rom_file_number];
+    char *rom_file_path = (char*) malloc(strlen(PREDEF_ROMS_FOLDER) + strlen(rom_file) + 1);
+
+    strcpy(rom_file_path, PREDEF_ROMS_FOLDER);
+    strcat(rom_file_path, rom_file);
+
+    return rom_file_path;
+}
+
+FILE* load_rom_file(char *rom_file_path) {
     printf("Loading ROM file: %s\n", rom_file_path);
 
     FILE *file = fopen(rom_file_path, "rb");
 
     if (file == NULL) {
         printf("Error: Failed to open ROM file: %s\n", rom_file_path);
-        return 1;
+        exit(1);
     }
 
-    Cartridge *cartridge = create_cartridge(file);
-    if (cartridge == NULL) {
-        printf("Error: Failed to create cartridge.\n");
-        return 1;
-    }
-
-    fclose(file);
-
-    // Do Whatever
-    // Run game
-    // Open emulator
-
-    destroy_cartridge(cartridge);
-
-    return 0;
+    return file;
 }
 
-int load_rom_number(int rom_file_number) {
-    printf("Loading ROM file number: %d\n", rom_file_number);
+FILE* load_rom_number(int rom_file_number) {
+    char *rom_file_path = resolve_predefined_rom_file_path(rom_file_number);
 
-    if (rom_file_number < 0 || rom_file_number >= TEST_ROM_LENGTH) {
-        printf("Error: Invalid ROM file number: %d\n", rom_file_number);
-        printf("Must be between 0 and %d\n", TEST_ROM_LENGTH - 1);
-        return 1;
+    if (rom_file_path == NULL) {
+        printf("Error: Failed to resolve ROM file path: %d\n", rom_file_number);
+        exit(1);
     }
 
-    char *rom_file = (char*)test_roms[rom_file_number];
-    char *rom_file_path = (char*) malloc(strlen(ROM_LIB_FOLDER) + strlen(rom_file) + 1);
+    FILE *file = load_rom_file(rom_file_path);
 
-    strcpy(rom_file_path, ROM_LIB_FOLDER);
-    strcat(rom_file_path, rom_file);
+    if (file == NULL) {
+        printf("Error: Failed to load ROM file: %s\n", rom_file_path);
+        exit(1);
+    }
 
-    return load_rom_file(rom_file_path);
+    free(rom_file_path);
+
+    return file;
 }
