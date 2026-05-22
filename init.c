@@ -7,6 +7,8 @@
 #include "rom_loader.h"
 
 int init(int argc, char *argv[]) {
+    int return_value = 0;
+
     InitAction *action = init_action_create(argc, argv);
     if (action->type == ACTION_NULL) {
         printf("Error: Invalid command line arguments\n");
@@ -26,12 +28,14 @@ int init(int argc, char *argv[]) {
 
         default:
             printf("Error: Invalid action type: %d\n", action->type);
-            free(action);
-            return -1;
+            return_value = -1;
     }
 
+    // Clean up
     free(action);
-    return 0;
+    action = NULL;
+
+    return return_value;
 }
 
 InitAction* init_action_create(int argc, char *argv[]) {
@@ -87,15 +91,12 @@ int init_load_rom(InitAction *action) {
 
     // Clean up
     fclose(file);
-    if (action->type == ACTION_LOAD_ROM_NUMBER) {
-        free(rom_file_path);
-    }
 
     // <in_development>
     printf("ROM loaded successfully.\n");
     printf("Cartridge created successfully.\n");
-    printf("Nothing to do at this point.\n");
-    printf("In development...\n");
+    printf("Nothing to do at this point. Exiting...\n\n");
+    printf("In development.\n");
 
     // Clean up
     destroy_cartridge(cartridge);

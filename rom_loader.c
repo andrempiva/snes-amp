@@ -64,6 +64,7 @@ FILE* load_rom_number(int rom_file_number) {
     }
 
     free(rom_file_path);
+    rom_file_path = NULL;
 
     return file;
 }

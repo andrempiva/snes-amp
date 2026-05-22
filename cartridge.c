@@ -32,7 +32,9 @@ Cartridge* create_cartridge(FILE *file) {
 
 void destroy_cartridge(Cartridge *cartridge) {
     free(cartridge->bytes);
+    cartridge->bytes = NULL;
     free(cartridge);
+    cartridge = NULL;
 }
 
 int is_rom_headered(long size) {
