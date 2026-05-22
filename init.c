@@ -66,7 +66,6 @@ InitAction* init_action_create(int argc, char *argv[]) {
 }
 
 int init_load_rom(InitAction *action) {
-    char *rom_file_path = NULL;
     FILE* file = NULL;
 
     if (action->type == ACTION_LOAD_ROM_FILE) {
