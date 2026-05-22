@@ -12,13 +12,25 @@ int init(int argc, char *argv[]) {
         printf("Error: Invalid command line arguments\n");
         exit(1);
     }
-    if (init_action_run(action) != 0) {
-        printf("Error: Failed to run action\n");
-        exit(2);
+
+    switch (action->type) {
+        case ACTION_LOAD_ROM_FILE:
+        case ACTION_LOAD_ROM_NUMBER:
+            return init_load_rom(action);
+
+        // Other Actions...
+        // ...
+
+        // No action.
+        case ACTION_NULL: return 1;
+
+        default:
+            printf("Error: Invalid action type: %d\n", action->type);
+            free(action);
+            return -1;
     }
 
     free(action);
-
     return 0;
 }
 
@@ -47,24 +59,6 @@ InitAction* init_action_create(int argc, char *argv[]) {
     }
 
     return action;
-}
-
-int init_action_run(InitAction *action) {
-    switch (action->type) {
-        case ACTION_LOAD_ROM_FILE:
-        case ACTION_LOAD_ROM_NUMBER:
-            return init_load_rom(action);
-
-        // Other Actions...
-        // ...
-
-        // No action.
-        case ACTION_NULL: return 1;
-
-        default:
-            printf("Error: Invalid action type: %d\n", action->type);
-            return -1;
-    }
 }
 
 int init_load_rom(InitAction *action) {

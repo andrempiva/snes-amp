@@ -15,6 +15,5 @@ typedef struct {
 int init(int argc, char *argv[]);
 
 InitAction* init_action_create(int argc, char *argv[]);
-int init_action_run(InitAction *action);
 
 int init_load_rom(InitAction *action);
