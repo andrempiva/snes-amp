@@ -5,6 +5,7 @@
 #include "cartridge.h"
 #include "init.h"
 #include "rom_loader.h"
+#include "utils.h"
 
 int init(int argc, char *argv[]) {
     int return_value = 0;
@@ -83,13 +84,27 @@ int init_load_rom(InitAction *action) {
     }
 
     Cartridge *cartridge = create_cartridge(file);
+
+
+    #ifdef PRINT_HEADER_DETAILS
+    printf("Cartridge bytes after creation (outside the constructor) (first 512 bytes).\n");
+    print_512_bytes_from_array(cartridge->bytes, false);
+    #endif
+
     if (cartridge == NULL) {
         printf("Error: Failed to create cartridge.\n");
         exit(1);
     }
 
+    // printf("First 512 bytes of the ROM:\n");
+    // print_512_bytes_from_file(file);
+    // printf("First 512 bytes of the cartridge bytes:\n");
+    // print_512_bytes_from_array(cartridge->bytes, false);
+
     // Clean up
     fclose(file);
+
+    assemble_header(cartridge);
 
     // <in_development>
     printf("ROM loaded successfully.\n");
