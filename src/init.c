@@ -5,7 +5,6 @@
 #include "cartridge.h"
 #include "init.h"
 #include "rom_loader.h"
-#include "utils.h"
 
 int init(int argc, char *argv[]) {
     int return_value = 0;
@@ -67,23 +66,23 @@ InitAction* init_action_create(int argc, char *argv[]) {
 }
 
 int init_load_rom(InitAction *action) {
-    FILE* file = NULL;
+    ROM* rom = NULL;
 
     if (action->type == ACTION_LOAD_ROM_FILE) {
-        file = load_rom_file(action->s_param);
+        rom = rom_load_file(action->s_param);
     } else if (action->type == ACTION_LOAD_ROM_NUMBER) {
-        file = load_rom_number(action->i_param);
+        rom = rom_load_number(action->i_param);
     } else {
         printf("Error: Undefined action type on loading ROM: %d.\n", action->type);
         exit(1);
     }
 
-    if (file == NULL) {
+    if (rom == NULL) {
         printf("Error: Failed to load ROM file.\n");
         exit(1);
     }
 
-    Cartridge *cartridge = create_cartridge(file);
+    Cartridge *cartridge = create_cartridge(rom);
 
 
     #ifdef PRINT_HEADER_DETAILS
@@ -101,12 +100,10 @@ int init_load_rom(InitAction *action) {
     // printf("First 512 bytes of the cartridge bytes:\n");
     // print_512_bytes_from_array(cartridge->bytes, false);
 
-    // Clean up
-    fclose(file);
-
-    assemble_header(cartridge);
 
     // <in_development>
+    print_header_details(cartridge);
+
     printf("ROM loaded successfully.\n");
     printf("Cartridge created successfully.\n");
     printf("Nothing to do at this point. Exiting...\n\n");
@@ -114,6 +111,7 @@ int init_load_rom(InitAction *action) {
 
     // Clean up
     destroy_cartridge(cartridge);
+    rom_destroy(rom);
     // </in_development>
 
     return 0;

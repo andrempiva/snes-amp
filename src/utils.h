@@ -1,8 +1,8 @@
-#ifndef UTILS_H
-#define UTILS_H
+#pragma once
 
 #include <stdint.h>
 #include <stdio.h>
+
 #include "vrg.h"
 
 char* int_to_binary(unsigned int value, bool with_spaces);
@@ -17,6 +17,5 @@ int main(int argc, char *argv[]);
 void print_512_bytes_from_arrayX(uint8_t *bytes, bool space);
 void print_512_bytes_from_file(FILE *file);
 
-#endif
-
 uint16_t make_uint16(uint8_t high_byte, uint8_t low_byte);
+uint16_t get_uint16(uint8_t *address);

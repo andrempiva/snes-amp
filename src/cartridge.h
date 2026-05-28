@@ -2,26 +2,46 @@
 // - https://snes.nesdev.org/wiki/ROM_header
 
 #include <stdint.h>
-#include <stdio.h>
 
-typedef struct {
+#include "rom.h"
+
+typedef enum MapMode {
+    MAP_MODE_LOROM = 0,
+    MAP_MODE_HIROM = 1,
+    MAP_MODE_EXHIROM = 5,
+} MapMode;
+
+typedef struct Cartridge {
     uint8_t *bytes;
-    long size;
-    long first_half_size;
-    long second_half_size;
-    long header_address;
+    unsigned int size;
+    unsigned int first_half_size;
+    unsigned int second_half_size;
+    unsigned int header_offset;
+    char title[22];
+    bool rom_speed;
+    MapMode map_mode;
+    uint8_t chipset;
+    uint8_t rom_size;
+    uint8_t ram_size;
+    uint8_t country;
+    uint8_t developer_id;
+    uint8_t version;
+    uint16_t checksum;
+    uint16_t checksum_complement;
+    uint8_t interrupt_vectors[32];
 } Cartridge;
 
-Cartridge* create_cartridge(FILE *file);
+
+Cartridge* create_cartridge(ROM *rom);
 void destroy_cartridge(Cartridge *cartridge);
-long next_power_of_2(long size);
-int is_rom_headered(long size);
+unsigned int next_power_of_2(unsigned int size);
 
 void assemble_header(Cartridge *cartridge);
+void print_header_details(Cartridge *cart);
 
 
 
-unsigned int locate_header(Cartridge *cartridge);
+void locate_header(Cartridge *cartridge);
 
 // ## Header Verification
 //
@@ -36,11 +56,6 @@ unsigned int locate_header(Cartridge *cartridge);
 // - The first instruction at a valid reset vector is unlikely to be: `brk, cop, stp, wdm, $FF (sbc long)`
 // - ROM and RAM sizes are reasonable.
 // - Game name field is ASCII characters only.
-
-typedef struct {
-    uint16_t value;
-    uint16_t complement;
-} Checksum;
 
 // ## Checksum
 //
@@ -57,5 +72,5 @@ typedef struct {
 // 2. Add every byte from the prepared data to the checksum. (Overflow is discarded.)
 // 3. Store the checksum in the ROM header ($FFDE or equivalent).
 // 4. Store checksum ^ $FFFF in the ROM header ($FFDC).
-void compute_checksum(Cartridge *cartridge, Checksum *checksum);
-bool is_header_location_valid(unsigned int location, Cartridge *cartridge, Checksum *checksum);
+void compute_checksum(Cartridge *cartridge);
+bool is_header_location_valid(unsigned int location, Cartridge *cartridge);

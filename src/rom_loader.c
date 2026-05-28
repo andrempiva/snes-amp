@@ -4,6 +4,9 @@
 
 #include "cartridge.h"
 #include "rom_loader.h"
+#include "utils.h"
+
+// #define PRINT_HEADER_DETAILS
 
 // Predefined ROM data
 const char* predefined_roms[] = {
@@ -27,15 +30,13 @@ char* resolve_predefined_rom_file_path(int rom_file_number) {
     }
 
     char *rom_file = (char*)predefined_roms[rom_file_number];
-    char *rom_file_path = (char*) malloc(strlen(PREDEF_ROMS_FOLDER) + strlen(rom_file) + 1);
-
-    strcpy(rom_file_path, PREDEF_ROMS_FOLDER);
+    char *rom_file_path = strdup(PREDEF_ROMS_FOLDER);
     strcat(rom_file_path, rom_file);
 
     return rom_file_path;
 }
 
-FILE* load_rom_file(char *rom_file_path) {
+ROM* rom_load_file(char *rom_file_path) {
     printf("Loading ROM file: %s\n", rom_file_path);
 
     FILE *file = fopen(rom_file_path, "rb");
@@ -45,10 +46,59 @@ FILE* load_rom_file(char *rom_file_path) {
         exit(1);
     }
 
-    return file;
+    fseek(file, 0, SEEK_END);
+    unsigned int rom_file_size = (unsigned int)ftell(file);
+    rewind(file);
+
+    char *binary_string = int_to_binary(rom_file_size, /* with_spaces = */ true);
+    printf("ROM size: %u, 0x%06X, 0b%s.\n", rom_file_size, rom_file_size, binary_string);
+    free(binary_string);
+    binary_string = NULL;
+
+    #ifdef PRINT_HEADER_DETAILS
+    printf("ROM first 512 bytes.\n");
+    print_512_bytes_from_file(file);
+    #endif
+
+    ROMHeaderStatus header_status = get_rom_header_status(rom_file_size);
+    if (header_status == ROM_HEADERED_UNKNOWN) {
+        printf("Error: No support for unknown ROM header status at the moment. Exiting...\n");
+        exit(1);
+    }
+
+    ROM *rom = (ROM*) malloc(sizeof(ROM));
+    rom->file = file;
+    rom->path = strdup(rom_file_path);
+    rom->size = rom_file_size;
+    rom->header_status = header_status;
+
+    return rom;
 }
 
-FILE* load_rom_number(int rom_file_number) {
+
+/**
+ *
+ * @param rom_file_size
+ * @return ROMHeaderStatus
+ */
+ROMHeaderStatus get_rom_header_status(unsigned int rom_file_size) {
+    unsigned int modulo = rom_file_size % 1024;
+
+    if (modulo == 512) {
+        printf("ROM is headered.\n");
+        return ROM_HEADERED_YES;
+    } else if (modulo == 0) {
+        printf("ROM is unheadered.\n");
+        return ROM_HEADERED_NO;
+    }
+
+    // invalid ROM size
+    printf("Warning: Unable to determine if ROM is headered or unheadered from ROM size.\n");
+    return ROM_HEADERED_UNKNOWN;
+}
+
+
+ROM* rom_load_number(int rom_file_number) {
     char *rom_file_path = resolve_predefined_rom_file_path(rom_file_number);
 
     if (rom_file_path == NULL) {
@@ -56,15 +106,22 @@ FILE* load_rom_number(int rom_file_number) {
         exit(1);
     }
 
-    FILE *file = load_rom_file(rom_file_path);
+    ROM *rom = rom_load_file(rom_file_path);
 
-    if (file == NULL) {
-        printf("Error: Failed to load ROM file: %s\n", rom_file_path);
-        exit(1);
+    return rom;
+}
+
+void rom_destroy(ROM *rom) {
+    if (rom->path != NULL) {
+        free(rom->path);
+        rom->path = NULL;
     }
 
-    free(rom_file_path);
-    rom_file_path = NULL;
+    if (rom->file != NULL) {
+        fclose(rom->file);
+        rom->file = NULL;
+    }
 
-    return file;
+    free(rom);
+    rom = NULL;
 }

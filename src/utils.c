@@ -92,6 +92,21 @@ void print_512_bytes_from_file(FILE *file) {
     print_512_bytes_from_array(bytes, false);
 }
 
-uint16_t make_uint16(uint8_t high_byte, uint8_t low_byte) {
+/**
+ * Make a 16-bit unsigned integer from two 8-bit unsigned integers.
+ * @param high_byte
+ * @param low_byte
+ * @return The 16-bit unsigned integer.
+ */
+inline uint16_t make_uint16(uint8_t high_byte, uint8_t low_byte) {
     return (uint16_t)((((uint16_t)high_byte) << 8) | ((uint16_t)low_byte));
+}
+
+/**
+ * Get a 16-bit number from a little-endian address.
+ * @param address
+ * @return The 16-bit number
+ */
+inline uint16_t get_uint16(uint8_t *address) {
+    return make_uint16(address[1], address[0]);
 }
