@@ -18,10 +18,10 @@ Cartridge* create_cartridge(ROM *rom) {
         fseek(file, 512L, SEEK_SET);
 
         // <print>
-        char *binary_string = int_to_binary(cart_size, /* with_spaces = */ true);
-        printf("New ROM size: %u, $%06X, 0b%s.\n", cart_size, cart_size, binary_string);
-        free(binary_string);
-        binary_string = NULL;
+        // char *binary_string = int_to_binary(cart_size, /* with_spaces = */ true);
+        // printf("New ROM size: %u, $%06X, 0b%s.\n", cart_size, cart_size, binary_string);
+        // free(binary_string);
+        // binary_string = NULL;
         // </print>
 
         #ifdef PRINT_HEADER_DETAILS
@@ -91,11 +91,11 @@ void compute_checksum(Cartridge *cart) {
         checksum = (uint16_t)(checksum + (uint16_t)cart->bytes[i]);
     }
 
-    printf("Checksum of size: $%04X.\n", checksum);
+    // printf("Checksum of size: $%04X.\n", checksum);
 
     // If the ROM size is not a power of 2, sum the second half of the ROM again.
     if (cart->first_half_size != cart->second_half_size) {
-        printf("Warning: The ROM size is not a power of 2. Summing the second half again.\n");
+        printf("Warning: The ROM size is not a power of 2. Summing the second half again for checksum.\n");
 
         // print_512_bytes_from_array(cart->bytes + cart->first_half_size);
 
@@ -103,7 +103,7 @@ void compute_checksum(Cartridge *cart) {
             checksum = (uint16_t)(checksum + (uint16_t)cart->bytes[i]);
         }
 
-        printf("Checksum of size + 2nd half again: $%04X.\n", checksum);
+        // printf("Checksum of size + 2nd half again: $%04X.\n", checksum);
     }
 
     cart->checksum = checksum;
@@ -113,7 +113,7 @@ void compute_checksum(Cartridge *cart) {
 void locate_header(Cartridge *cartridge) {
     compute_checksum(cartridge);
 
-    printf("Checking header locations... Checksum: $%04X, Complement: $%04X.\n", cartridge->checksum, cartridge->checksum_complement);
+    // printf("Checking header locations... Checksum: $%04X, Complement: $%04X.\n", cartridge->checksum, cartridge->checksum_complement);
 
     const unsigned int candidate_header_locations[] = {
         0x007F00, // LoROM
@@ -129,7 +129,7 @@ void locate_header(Cartridge *cartridge) {
         unsigned int candidate_header_location = candidate_header_locations[i];
         if (is_header_location_valid(candidate_header_location, cartridge)) {
             header_location = candidate_header_location;
-            printf("Valid header location found: $%06X.\n", header_location);
+            // printf("Valid header location found: $%06X.\n", header_location);
             break;
         }
     }
@@ -152,12 +152,14 @@ bool is_header_location_valid(unsigned int location, Cartridge *cartridge) {
     uint16_t header_checksum = get_uint16(cartridge->bytes + header_checksum_location);
     uint16_t header_complement = get_uint16(cartridge->bytes + header_complement_location);
 
-    if (header_checksum != cartridge->checksum || header_complement != cartridge->checksum_complement) {
-        printf("Invalid header location: $%06X. Header Checksum: $%04X, Header Complement: $%04X.\n", header_checksum_location, header_checksum, header_complement);
-        return false;
-    }
+    return (header_checksum == cartridge->checksum && header_complement == cartridge->checksum_complement);
 
-    return true;
+    // if (header_checksum != cartridge->checksum || header_complement != cartridge->checksum_complement) {
+    //     // printf("Invalid header location: $%06X. Header Checksum: $%04X, Header Complement: $%04X.\n", header_checksum_location, header_checksum, header_complement);
+    //     return false;
+    // }
+
+    // return true;
 }
 
 void assemble_header(Cartridge *cart) {

@@ -21,7 +21,7 @@ const int PREDEF_ROMS_AMOUNT = sizeof(predefined_roms) / sizeof(predefined_roms[
 const char PREDEF_ROMS_FOLDER[] = "../roms/";
 
 char* resolve_predefined_rom_file_path(int rom_file_number) {
-    printf("Loading ROM file number: %d\n", rom_file_number);
+    // printf("Loading ROM file number: %d\n", rom_file_number);
 
     if (rom_file_number < 0 || rom_file_number >= PREDEF_ROMS_AMOUNT) {
         printf("Error: Invalid ROM file number: %d\n", rom_file_number);
@@ -29,15 +29,17 @@ char* resolve_predefined_rom_file_path(int rom_file_number) {
         exit(1);
     }
 
-    char *rom_file = (char*)predefined_roms[rom_file_number];
+    // char *rom_file = (char*)predefined_roms[rom_file_number];
+    printf("Loading ROM file number %d: %s\n", rom_file_number, predefined_roms[rom_file_number]);
+
     char *rom_file_path = strdup(PREDEF_ROMS_FOLDER);
-    strcat(rom_file_path, rom_file);
+    strcat(rom_file_path, predefined_roms[rom_file_number]);
 
     return rom_file_path;
 }
 
 ROM* rom_load_file(char *rom_file_path) {
-    printf("Loading ROM file: %s\n", rom_file_path);
+    // printf("Loading ROM file: %s\n", rom_file_path);
 
     FILE *file = fopen(rom_file_path, "rb");
 
@@ -50,10 +52,12 @@ ROM* rom_load_file(char *rom_file_path) {
     unsigned int rom_file_size = (unsigned int)ftell(file);
     rewind(file);
 
-    char *binary_string = int_to_binary(rom_file_size, /* with_spaces = */ true);
-    printf("ROM size: %u, 0x%06X, 0b%s.\n", rom_file_size, rom_file_size, binary_string);
-    free(binary_string);
-    binary_string = NULL;
+    // <print>
+    // char *binary_string = int_to_binary(rom_file_size, /* with_spaces = */ true);
+    // printf("ROM size: %u, 0x%06X, 0b%s.\n", rom_file_size, rom_file_size, binary_string);
+    // free(binary_string);
+    // binary_string = NULL;
+    // </print>
 
     #ifdef PRINT_HEADER_DETAILS
     printf("ROM first 512 bytes.\n");
@@ -85,10 +89,10 @@ ROMHeaderStatus get_rom_header_status(unsigned int rom_file_size) {
     unsigned int modulo = rom_file_size % 1024;
 
     if (modulo == 512) {
-        printf("ROM is headered.\n");
+        // printf("ROM is headered.\n");
         return ROM_HEADERED_YES;
     } else if (modulo == 0) {
-        printf("ROM is unheadered.\n");
+        // printf("ROM is unheadered.\n");
         return ROM_HEADERED_NO;
     }
 
