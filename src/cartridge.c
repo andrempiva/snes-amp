@@ -144,6 +144,10 @@ void locate_header(Cartridge *cartridge) {
 }
 
 bool is_header_location_valid(unsigned int location, Cartridge *cartridge) {
+    if (cartridge->size < location + 0xDE) {
+        return false;
+    }
+
     // Checksum:   $xxxxDE
     // Complement: $xxxxDC
     unsigned int header_checksum_location = location + 0xDE;

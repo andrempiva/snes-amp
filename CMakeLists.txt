@@ -11,7 +11,9 @@ set(CMAKE_C_STANDARD_REQUIRED ON)
 set(CMAKE_EXPORT_COMPILE_COMMANDS ON)
 
 # Main sources
-file(GLOB_RECURSE SNES_AMP_SOURCES CONFIGURE_DEPENDS src/*.c)
+file(GLOB_RECURSE SNES_AMP_SOURCES CONFIGURE_DEPENDS
+    src/*.c src/lib/*.c src/cpu/*.c src/ppu/*.c src/apu/*.c
+)
 
 add_executable(snes-amp ${SNES_AMP_SOURCES})
 

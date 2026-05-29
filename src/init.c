@@ -3,6 +3,7 @@
 #include <string.h>
 
 #include "cartridge.h"
+#include "cpu/cpu.h"
 #include "init.h"
 #include "rom_loader.h"
 
@@ -100,9 +101,12 @@ int init_load_rom(InitAction *action) {
     // printf("First 512 bytes of the cartridge bytes:\n");
     // print_512_bytes_from_array(cartridge->bytes, false);
 
+    CPU cpu = cpu_create();
+
 
     // <in_development>
     print_header_details(cartridge);
+    flags_print_details(cpu.flags);
 
     printf("ROM loaded successfully.\n");
     printf("Cartridge created successfully.\n");
@@ -110,6 +114,7 @@ int init_load_rom(InitAction *action) {
     printf("In development.\n");
 
     // Clean up
+    cpu_destroy(&cpu);
     destroy_cartridge(cartridge);
     rom_destroy(rom);
     // </in_development>

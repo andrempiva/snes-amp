@@ -1,6 +1,7 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
+#include <unistd.h>
 
 #include "cartridge.h"
 #include "rom_loader.h"
@@ -15,10 +16,51 @@ const char* predefined_roms[] = {
     "Super Mario World (U) [!].smc",
     "Zelda no Densetsu (V1.0) (J).smc",
     "Super Metroid (JU) [!].smc",
+    "test/cputest-basic.sfc",
+    "test/cputest-full.sfc",
+    "test/gradient-test.sfc",
+    "test/SNES Burn-in Test Cartridge (Rev. D).sfc",
+    "test/spctest.sfc",
 };
 
 const int PREDEF_ROMS_AMOUNT = sizeof(predefined_roms) / sizeof(predefined_roms[0]);
 const char PREDEF_ROMS_FOLDER[] = "../roms/";
+
+char* find_roms_folder() {
+    char current_dir[128];
+    char roms_folder[128];
+
+    if (getcwd(current_dir, sizeof(current_dir)) == NULL) {
+        printf("Error: Failed to get current directory\n");
+        exit(1);
+    }
+
+    int current_dir_length = (int)strlen(current_dir);
+    if (current_dir[current_dir_length - 1] != '/') {
+        strcat(current_dir, "/");
+    }
+
+    strcpy(roms_folder, current_dir);
+    strcat(roms_folder, PREDEF_ROMS_FOLDER);
+
+    // Check if folder exists
+    printf("Checking if ROMs folder exists: %s\n", roms_folder);
+    if (access(roms_folder, F_OK) == -1) {
+        strcpy(roms_folder, current_dir);
+        strcat(roms_folder, "../");
+        strcat(roms_folder, PREDEF_ROMS_FOLDER);
+
+        printf("Checking if ROMs folder exists: %s\n", roms_folder);
+        if (access(roms_folder, F_OK) == -1) {
+            printf("Error: ROMs folder not found.\n");
+            exit(1);
+        }
+    }
+
+    char* roms_folder_path = strdup(roms_folder);
+
+    return roms_folder_path;
+}
 
 char* resolve_predefined_rom_file_path(int rom_file_number) {
     // printf("Loading ROM file number: %d\n", rom_file_number);
@@ -30,16 +72,29 @@ char* resolve_predefined_rom_file_path(int rom_file_number) {
     }
 
     // char *rom_file = (char*)predefined_roms[rom_file_number];
-    printf("Loading ROM file number %d: %s\n", rom_file_number, predefined_roms[rom_file_number]);
+    const char *rom_file = predefined_roms[rom_file_number];
+    printf("Loading ROM file number %d: %s\n", rom_file_number, rom_file);
 
-    char *rom_file_path = strdup(PREDEF_ROMS_FOLDER);
-    strcat(rom_file_path, predefined_roms[rom_file_number]);
+    // <try_to_find_roms_folder>
+    // char *roms_folder_path = find_roms_folder();
+    // char *rom_file_path = malloc(strlen(roms_folder_path) + strlen(rom_file) + 1);
+    // strcpy(rom_file_path, roms_folder_path);
+    // strcat(rom_file_path, rom_file);
+    // free(roms_folder_path);
+    // roms_folder_path = NULL;
+    // </try_to_find_roms_folder>
+
+    // <use_predefined_roms_folder>
+    char *rom_file_path = malloc((strlen(PREDEF_ROMS_FOLDER) + strlen(rom_file) + 1) * sizeof(char));
+    strcpy(rom_file_path, PREDEF_ROMS_FOLDER);
+    strcat(rom_file_path, rom_file);
+    // </use_predefined_roms_folder>
 
     return rom_file_path;
 }
 
 ROM* rom_load_file(char *rom_file_path) {
-    // printf("Loading ROM file: %s\n", rom_file_path);
+    printf("Loading ROM file: %s\n", rom_file_path);
 
     FILE *file = fopen(rom_file_path, "rb");
 
