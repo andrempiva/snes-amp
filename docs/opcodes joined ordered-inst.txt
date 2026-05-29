@@ -1,0 +1,260 @@
+73 nn       nzc--v      ADC (nn,S),Y  ADC A,[[nn+S]+Y]                     A=A+C+[WADCD[nn+S]+Y]
+61 nn       nzc--v  6   ADC (nn,X)    ADC A,[[nn+X]]     ADC (Indirect,X)  A=A+C+[WADCD[D+nn+X]]
+72 nn       nzc--v      ADC (nn)      ADC A,[[nn]]       ADC (Indirect)    A=A+C+[WADCD[D+nn]]
+71 nn       nzc--v  5*  ADC (nn),Y    ADC A,[[nn]+Y]     ADC (Indirect),Y  A=A+C+[WADCD[D+nn]+Y]
+67 nn       nzc--v      ADC [nn]      ADC A,[FAR[nn]]                      A=A+C+[FAR[D+nn]]
+77 nn       nzc--v      ADC [nn],y    ADC A,[FAR[nn]+Y]                    A=A+C+[FAR[D+nn]+Y]
+69 nn       nzc--v  2   ADC #nn       ADC A,nn           ADC Immediate     A=A+C+nn
+65 nn       nzc--v  3   ADC nn        ADC A,[nn]         ADC Zero Page     A=A+C+[D+nn]
+63 nn       nzc--v      ADC nn,S      ADC A,[nn+S]                         A=A+C+[nn+S]
+75 nn       nzc--v  4   ADC nn,X      ADC A,[nn+X]       ADC Zero Page,X   A=A+C+[D+nn+X]
+6D nn nn    nzc--v  4   ADC nnnn      ADC A,[nnnn]       ADC Absolute      A=A+C+[DB:nnnn]
+7D nn nn    nzc--v  4*  ADC nnnn,X    ADC A,[nnnn+X]     ADC Absolute,X    A=A+C+[DB:nnnn+X]
+79 nn nn    nzc--v  4*  ADC nnnn,Y    ADC A,[nnnn+Y]     ADC Absolute,Y    A=A+C+[DB:nnnn+Y]
+6F nn nn nn nzc--v      ADC nnnnnn    ADC A,[nnnnnn]                       A=A+C+[nnnnnn]
+7F nn nn nn nzc--v      ADC nnnnnn,X  ADC A,[nnnnnn+X]                     A=A+C+[nnnnnn+X    ]
+33 nn       nz----      AND (nn,S),Y  AND A,[[nn+S]+Y]                     A=A AND [WORD[nn+S]+Y]
+21 nn       nz----  6   AND (nn,X)    AND A,[[nn+X]]     AND (Indirect,X)  A=A AND [WORD[D+nn+X]]
+32 nn       nz----      AND (nn)      AND A,[[nn]]       AND (Indirect)    A=A AND [WORD[D+nn]]
+31 nn       nz----  5*  AND (nn),Y    AND A,[[nn]+Y]     AND (Indirect),Y  A=A AND [WORD[D+nn]+Y]
+27 nn       nz----      AND [nn]      AND A,[FAR[nn]]                      A=A AND [FAR[D+nn]]
+37 nn       nz----      AND [nn],y    AND A,[FAR[nn]+Y]                    A=A AND [FAR[D+nn]+Y]
+29 nn       nz----  2   AND #nn       AND A,nn           AND Immediate     A=A AND nn
+25 nn       nz----  3   AND nn        AND A,[nn]         AND Zero Page     A=A AND [D+nn]
+23 nn       nz----      AND nn,S      AND A,[nn+S]                         A=A AND [nn+S]
+35 nn       nz----  4   AND nn,X      AND A,[nn+X]       AND Zero Page,X   A=A AND [D+nn+X]
+2D nn nn    nz----  4   AND nnnn      AND A,[nnnn]       AND Absolute      A=A AND [DB:nnnn]
+3D nn nn    nz----  4*  AND nnnn,X    AND A,[nnnn+X]     AND Absolute,X    A=A AND [DB:nnnn+X]
+39 nn nn    nz----  4*  AND nnnn,Y    AND A,[nnnn+Y]     AND Absolute,Y    A=A AND [DB:nnnn+Y]
+2F nn nn nn nz----      AND nnnnnn    AND A,[nnnnnn]                       A=A AND [nnnnnn]
+3F nn nn nn nz----      AND nnnnnn,X  AND A,[nnnnnn+X]                     A=A AND [nnnnnn+X    ]
+0A          nzc---  2   ASL A         SHL A                                SHL A
+06 nn       nzc---  5   ASL nn        SHL [nn]                             SHL [D+nn]
+16 nn       nzc---  6   ASL nn,X      SHL [nn+X]                           SHL [D+nn+X]
+0E nn nn    nzc---  6   ASL nnnn      SHL [nnnn]                           SHL [DB:nnnn]
+1E nn nn    nzc---  7   ASL nnnn,X    SHL [nnnn+X]                         SHL [DB:nnnn+X]
+90 dd       ------  2** BCC/BLT       JNC/JB  disp                         ;C=0 (less/below/no carry)
+B0 dd       ------  2** BCS/BGE       JC/JAE  disp                         ;C=1 (above/greater/equal/carry)
+F0 dd       ------  2** BEQ/BZS       JZ/JE   disp                         ;Z=1 (zero/equal)
+89 nn       -z----      BIT #nn       TEST A,nn                            nn
+24 nn       xz---x  3   BIT nn        TEST A,[nn]                          [D+nn]
+34 nn       xz---x      BIT nn,X      TEST A,[nn+X]                        [D+nn+X]
+2C nn nn    xz---x  4   BIT nnnn      TEST A,[nnnn]                        [DB:nnnn]
+3C nn nn    xz---x      BIT nnnn,X    TEST A,[nnnn+X]                      [DB:nnnn+X]
+30 dd       ------  2** BMI           JS      disp                         ;N=1 (minus/negative/signed)
+D0 dd       ------  2** BNE/BZC       JNZ/JNE disp                         ;Z=0 (not zero/not equal)
+10 dd       ------  2** BPL           JNS     disp                         ;N=0 (plus/positive)
+80 dd       ------  3xx BRA disp8     JMP disp                             PC=PC+/-disp8
+00                      BRK           Break              B=1 [S]=$+2,[S]=P,D=0 I=1, PB=00, PC=[00FFFE](6502) [00FFE6](65C816)
+82 dd dd    ------  4   BRL disp16    JMP disp                             PC=PC+/-disp16
+50 dd       ------  2** BVC           JNO     disp                         ;V=0 (no overflow)
+70 dd       ------  2** BVS           JO      disp                         ;V=1 (overflow)
+18          --0---  2   CLC           CLC                                  C=0    ;Clear carry flag
+D8          ----0-  2   CLD           CLD                                  D=0 ;Clear decimal mode
+58          ---0--  2   CLI           EI                                   I=0    ;Clear interrupt disable bit
+B8          -----0  2   CLV           CL?                                  V=0    ;Clear overflow flag
+D3 nn       nzc---      CMP (nn,S),Y  CMP A,[[nn+S]+Y]                     A-[WORD[nn+S]+Y]
+C1 nn       nzc---  6   CMP (nn,X)    CMP A,[[nn+X]]     CMP (Indirect,X)  A-[WORD[D+nn+X]]
+D2 nn       nzc---      CMP (nn)      CMP A,[[nn]]       CMP (Indirect)    A-[WORD[D+nn]]
+D1 nn       nzc---  5*  CMP (nn),Y    CMP A,[[nn]+Y]     CMP (Indirect),Y  A-[WORD[D+nn]+Y]
+C7 nn       nzc---      CMP [nn]      CMP A,[FAR[nn]]                      A-[FAR[D+nn]]
+D7 nn       nzc---      CMP [nn],y    CMP A,[FAR[nn]+Y]                    A-[FAR[D+nn]+Y]
+C9 nn       nzc---  2   CMP #nn       CMP A,nn           CMP Immediate     A-nn
+C5 nn       nzc---  3   CMP nn        CMP A,[nn]         CMP Zero Page     A-[D+nn]
+C3 nn       nzc---      CMP nn,S      CMP A,[nn+S]                         A-[nn+S]
+D5 nn       nzc---  4   CMP nn,X      CMP A,[nn+X]       CMP Zero Page,X   A-[D+nn+X]
+CD nn nn    nzc---  4   CMP nnnn      CMP A,[nnnn]       CMP Absolute      A-[DB:nnnn]
+DD nn nn    nzc---  4*  CMP nnnn,X    CMP A,[nnnn+X]     CMP Absolute,X    A-[DB:nnnn+X]
+D9 nn nn    nzc---  4*  CMP nnnn,Y    CMP A,[nnnn+Y]     CMP Absolute,Y    A-[DB:nnnn+Y]
+CF nn nn nn nzc---      CMP nnnnnn    CMP A,[nnnnnn]                       A-[nnnnnn]
+DF nn nn nn nzc---      CMP nnnnnn,X  CMP A,[nnnnnn+X]                     A-[nnnnnn+X    ]
+02                      COP           ;65C816            B=1 [S]=$+2,[S]=P,D=0 I=1, PB=00, PC=[00FFF4](6502) [00FFE4](65C816)
+02                      COP/ABORT     ;65C816                                       PB=00, PC=[00FFF8](6502) [00FFE8](65C816)
+02                      COP/IRQ       Interrupt          B=0 [S]=PC, [S]=P,D=0 I=1, PB=00, PC=[00FFFE](6502) [00FFEE](65C816)
+02                      COP/NMI       NMI                B=0 [S]=PC, [S]=P,D=0 I=1, PB=00, PC=[00FFFA](6502) [00FFEA](65C816)
+02                      COP/RESET     Reset              D=0 E=1 I=1 D=0000, DB=00  PB=00, PC=[00FFFC](6502) N/A     (65C816)
+E0 nn       nzc---  2   CPX #nn       CMP X,nn           Immediate         X-nn
+E4 nn       nzc---  3   CPX nn        CMP X,[nn]         Zero Page         X-[D+nn]
+EC nn nn    nzc---  4   CPX nnnn      CMP X,[nnnn]       Absolute          X-[DB:nnnn]
+C0 nn       nzc---  2   CPY #nn       CMP Y,nn           Immediate         Y-nn
+C4 nn       nzc---  3   CPY nn        CMP Y,[nn]         Zero Page         Y-[D+nn]
+CC nn nn    nzc---  4   CPY nnnn      CMP Y,[nnnn]       Absolute          Y-[DB:nnnn]
+3A          nz----  2   DEA           DEC A                                A=A-1
+C6 nn       nz----  5   DEC nn        DEC [nn]                             [D+nn]=[D+nn]-1
+D6 nn       nz----  6   DEC nn,X      DEC [nn+X]                           [D+nn+X]=[D+nn+X]-1
+CE nn nn    nz----  6   DEC nnnn      DEC [nnnn]                           [DB:nnnn]=[DB:nnnn]-1
+DE nn nn    nz----  7   DEC nnnn,X    DEC [nnnn+X]                         [DB:nnnn+X]=[DB:nnnn+X]-1
+CA          nz----  2   DEX           DEC X                                X=X-1
+88          nz----  2   DEY           DEC Y                                Y=Y-1
+53 nn       nz----      EOR (nn,S),Y  XOR A,[[nn+S]+Y]                     A=A XOR [WORD[nn+S]+Y]
+41 nn       nz----  6   EOR (nn,X)    XOR A,[[nn+X]]     XOR (Indirect,X)  A=A XOR [WORD[D+nn+X]]
+52 nn       nz----      EOR (nn)      XOR A,[[nn]]       XOR (Indirect)    A=A XOR [WORD[D+nn]]
+51 nn       nz----  5*  EOR (nn),Y    XOR A,[[nn]+Y]     XOR (Indirect),Y  A=A XOR [WORD[D+nn]+Y]
+47 nn       nz----      EOR [nn]      XOR A,[FAR[nn]]                      A=A XOR [FAR[D+nn]]
+57 nn       nz----      EOR [nn],y    XOR A,[FAR[nn]+Y]                    A=A XOR [FAR[D+nn]+Y]
+49 nn       nz----  2   EOR #nn       XOR A,nn           XOR Immediate     A=A XOR nn
+45 nn       nz----  3   EOR nn        XOR A,[nn]         XOR Zero Page     A=A XOR [D+nn]
+43 nn       nz----      EOR nn,S      XOR A,[nn+S]                         A=A XOR [nn+S]
+55 nn       nz----  4   EOR nn,X      XOR A,[nn+X]       XOR Zero Page,X   A=A XOR [D+nn+X]
+4D nn nn    nz----  4   EOR nnnn      XOR A,[nnnn]       XOR Absolute      A=A XOR [DB:nnnn]
+5D nn nn    nz----  4*  EOR nnnn,X    XOR A,[nnnn+X]     XOR Absolute,X    A=A XOR [DB:nnnn+X]
+59 nn nn    nz----  4*  EOR nnnn,Y    XOR A,[nnnn+Y]     XOR Absolute,Y    A=A XOR [DB:nnnn+Y]
+4F nn nn nn nz----      EOR nnnnnn    XOR A,[nnnnnn]                       A=A XOR [nnnnnn]
+5F nn nn nn nz----      EOR nnnnnn,X  XOR A,[nnnnnn+X]                     A=A XOR [nnnnnn+X    ]
+1A          nz----  2   INA           INC A                                A=A+1
+E6 nn       nz----  5   INC nn        INC [nn]                             [D+nn]=[D+nn]+1
+F6 nn       nz----  6   INC nn,X      INC [nn+X]                           [D+nn+X]=[D+nn+X]+1
+EE nn nn    nz----  6   INC nnnn      INC [nnnn]                           [DB:nnnn]=[DB:nnnn]+1
+FE nn nn    nz----  7   INC nnnn,X    INC [nnnn+X]                         [DB:nnnn+X]=[DB:nnnn+X]+1
+E8          nz----  2   INX           INC X                                X=X+1
+C8          nz----  2   INY           INC Y                                Y=Y+1
+DC nn nn    ------  6   JML ...       JMP FAR[nnnn]                        PB:PC=[00:nnnn]
+7C nn nn    ------  6   JMP (nnnn,X)  JMP [nnnn+X]                         PC=WORD[PB:nnnn+X]
+6C nn nn    ------  5   JMP (nnnn)    JMP [nnnn]                           PC=WORD[00:nnnn]
+4C nn nn    ------  3   JMP nnnn      JMP nnnn                             PC=nnnn
+5C nn nn nn ------  4   JMP nnnnnn    JMP nnnnnn                           PB:PC=nnnnnn
+22 nn nn nn ------  4   JSL nnnnnn    CALL nnnnnn                          PB:PC=nnnnnn [S]=PB:PC+3
+FC nn nn    ------  6   JSR (nnnn,X)  CALL [nnnn+X]                        PC=WORD[PB:nnnn+X] [S]=PC
+20 nn nn    ------  6   JSR nnnn      CALL nnnn                            [S]=PC+2,PC=nnnn
+B3 nn       nz----      LDA (nn,S),Y  MOV A,[[nn+S]+Y]                     A=[WORD[nn+S]+Y]
+A1 nn       nz----  6   LDA (nn,X)    MOV A,[[nn+X]]                       A=[WORD[D+nn+X]]
+B2 nn       nz----      LDA (nn)      MOV A,[[nn]]                         A=[WORD[D+nn]]
+B1 nn       nz----  5*  LDA (nn),Y    MOV A,[[nn]+Y]                       A=[WORD[D+nn]+Y]
+A7 nn       nz----      LDA [nn]      MOV A,[FAR[nn]]                      A=[FAR[D+nn]]
+B7 nn       nz----      LDA [nn],y    MOV A,[FAR[nn]+Y]                    A=[FAR[D+nn]+Y]
+A9 nn       nz----  2   LDA #nn       MOV A,nn                             A=nn
+A5 nn       nz----  3   LDA nn        MOV A,[nn]                           A=[D+nn]
+A3 nn       nz----      LDA nn,S      MOV A,[nn+S]                         A=[nn+S]
+B5 nn       nz----  4   LDA nn,X      MOV A,[nn+X]                         A=[D+nn+X]
+AD nn nn    nz----  4   LDA nnnn      MOV A,[nnnn]                         A=[DB:nnnn]
+BD nn nn    nz----  4*  LDA nnnn,X    MOV A,[nnnn+X]                       A=[DB:nnnn+X]
+B9 nn nn    nz----  4*  LDA nnnn,Y    MOV A,[nnnn+Y]                       A=[DB:nnnn+Y]
+AF nn nn nn nz----      LDA nnnnnn    MOV A,[nnnnnn]                       A=[nnnnnn]
+BF nn nn nn nz----      LDA nnnnnn,X  MOV A,[nnnnnn+X]                     A=[nnnnnn+X]
+A2 nn       nz----  2   LDX #nn       MOV X,nn                             X=nn
+A6 nn       nz----  3   LDX nn        MOV X,[nn]                           X=[D+nn]
+B6 nn       nz----  4   LDX nn,Y      MOV X,[nn+Y]                         X=[D+nn+Y]
+AE nn nn    nz----  4   LDX nnnn      MOV X,[nnnn]                         X=[DB:nnnn]
+BE nn nn    nz----  4*  LDX nnnn,Y    MOV X,[nnnn+Y]                       X=[DB:nnnn+Y]
+A0 nn       nz----  2   LDY #nn       MOV Y,nn                             Y=nn
+A4 nn       nz----  3   LDY nn        MOV Y,[nn]                           Y=[D+nn]
+B4 nn       nz----  4   LDY nn,X      MOV Y,[nn+X]                         Y=[D+nn+X]
+AC nn nn    nz----  4   LDY nnnn      MOV Y,[nnnn]                         Y=[DB:nnnn]
+BC nn nn    nz----  4*  LDY nnnn,X    MOV Y,[nnnn+X]                       Y=[DB:nnnn+X]
+4A          0zc---  2   LSR A         SHR A                                SHR A
+46 nn       0zc---  5   LSR nn        SHR [nn]                             SHR [D+nn]
+56 nn       0zc---  6   LSR nn,X      SHR [nn+X]                           SHR [D+nn+X]
+4E nn nn    0zc---  6   LSR nnnn      SHR [nnnn]                           SHR [DB:nnnn]
+5E nn nn    0zc---  7   LSR nnnn,X    SHR [nnnn+X]                         SHR [DB:nnnn+X]
+54 dd ss    ------  7x  MVN ss,dd     LDIR [dd:Y],[ss:X],A+1               ;INC X/Y
+44 dd ss    ------  7x  MVP ss,dd     LDDR [dd:Y],[ss:X],A+1               ;DEC X/Y
+EA          ------  2   NOP           NOP                                  ;No operation
+13 nn       nz----      ORA (nn,S),Y  OR A,[[nn+S]+Y]                      A=A OR [WORD[nn+S]+Y]
+01 nn       nz----  6   ORA (nn,X)    OR A,[[nn+X]]      OR (Indirect,X)   A=A OR [WORD[D+nn+X]]
+12 nn       nz----      ORA (nn)      OR A,[[nn]]        OR (Indirect)     A=A OR [WORD[D+nn]]
+11 nn       nz----  5*  ORA (nn),Y    OR A,[[nn]+Y]      OR (Indirect),Y   A=A OR [WORD[D+nn]+Y]
+07 nn       nz----      ORA [nn]      OR A,[FAR[nn]]                       A=A OR [FAR[D+nn]]
+17 nn       nz----      ORA [nn],y    OR A,[FAR[nn]+Y]                     A=A OR [FAR[D+nn]+Y]
+09 nn       nz----  2   ORA #nn       OR A,nn            OR Immediate      A=A OR nn
+05 nn       nz----  3   ORA nn        OR A,[nn]          OR Zero Page      A=A OR [D+nn]
+03 nn       nz----      ORA nn,S      OR A,[nn+S]                          A=A OR [nn+S]
+15 nn       nz----  4   ORA nn,X      OR A,[nn+X]        OR Zero Page,X    A=A OR [D+nn+X]
+0D nn nn    nz----  4   ORA nnnn      OR A,[nnnn]        OR Absolute       A=A OR [DB:nnnn]
+1D nn nn    nz----  4*  ORA nnnn,X    OR A,[nnnn+X]      OR Absolute,X     A=A OR [DB:nnnn+X]
+19 nn nn    nz----  4*  ORA nnnn,Y    OR A,[nnnn+Y]      OR Absolute,Y     A=A OR [DB:nnnn+Y]
+0F nn nn nn nz----      ORA nnnnnn    OR A,[nnnnnn]                        A=A OR [nnnnnn]
+1F nn nn nn nz----      ORA nnnnnn,X  OR A,[nnnnnn+X]                      A=A OR [nnnnnn+X    ]
+F4 nn nn    ------  5   PEA nnnn      PUSH nnnn                  16        [S]=NNNN
+D4 nn       ------  6   PEI nn        PUSH WORD[nn]              16        [S]=WORD[D+nn]
+62 nn nn    ------  6   PER rel16     PUSH disp16                16        [S]=$+3+disp
+48          ------  3   PHA           PUSH A                     m         [S]=A
+8B          ------  3   PHB           PUSH DB                    8         [S]=DB
+0B          ------  4   PHD           PUSH D                     16        [S]=D
+4B          ------  3   PHK           PUSH PB                    8         [S]=PB
+08          ------  3   PHP           PUSH P                     8         [S]=P
+DA          ------  3   PHX           PUSH X                     x         [S]=X
+5A          ------  3   PHY           PUSH Y                     x         [S]=Y
+68          nz----  4   PLA           POP A                      m         A=[S]
+AB          nz----  4   PLB           POP DB                     8         DB=[S]
+2B          nz----  5   PLD           POP  D                     16        D=[S]
+28          nzcidv  4   PLP           POP  P                     8         P=[S]
+FA          nz----  4   PLX           POP  X                     x         X=[S]
+7A          nz----  4   PLY           POP  Y                     x         Y=[S]
+C2 nn       xxxxxx  3   REP #nn       CLR P,nn                             P=P AND NOT nn
+2A          nzc---  2   ROL A         RCL A                                RCL A
+26 nn       nzc---  5   ROL nn        RCL [nn]                             RCL [D+nn]
+36 nn       nzc---  6   ROL nn,X      RCL [nn+X]                           RCL [D+nn+X]
+2E nn nn    nzc---  6   ROL nnnn      RCL [nnnn]                           RCL [DB:nnnn]
+3E nn nn    nzc---  7   ROL nnnn,X    RCL [nnnn+X]                         RCL [DB:nnnn+X]
+6A          nzc---  2   ROR A         RCR A                                RCR A
+66 nn       nzc---  5   ROR nn        RCR [nn]                             RCR [D+nn]
+76 nn       nzc---  6   ROR nn,X      RCR [nn+X]                           RCR [D+nn+X]
+6E nn nn    nzc---  6   ROR nnnn      RCR [nnnn]                           RCR [DB:nnnn]
+7E nn nn    nzc---  7   ROR nnnn,X    RCR [nnnn+X]                         RCR [DB:nnnn+X]
+40          nzcidv  6   RTI           RETI                                 P=[S+1],PB:PC=[S+2],S=S+4
+6B          ------  ?   RTL           RETF                                 PB:PC=[S+1]+1, S=S+3
+60          ------  6   RTS           RET                                  PC=[S+1]+1, S=S+2
+F3 nn       nzc--v      SBC (nn,S),Y  SBC A,[[nn+S]+Y]                     A=A+C-1-[WORD[nn+S]+Y]
+E1 nn       nzc--v  6   SBC (nn,X)    SBC A,[[nn+X]]     SBC (Indirect,X)  A=A+C-1-[WORD[D+nn+X]]
+F2 nn       nzc--v      SBC (nn)      SBC A,[[nn]]       SBC (Indirect)    A=A+C-1-[WORD[D+nn]]
+F1 nn       nzc--v  5*  SBC (nn),Y    SBC A,[[nn]+Y]     SBC (Indirect),Y  A=A+C-1-[WORD[D+nn]+Y]
+E7 nn       nzc--v      SBC [nn]      SBC A,[FAR[nn]]                      A=A+C-1-[FAR[D+nn]]
+F7 nn       nzc--v      SBC [nn],y    SBC A,[FAR[nn]+Y]                    A=A+C-1-[FAR[D+nn]+Y]
+E9 nn       nzc--v  2   SBC #nn       SBC A,nn           SBC Immediate     A=A+C-1-nn
+E5 nn       nzc--v  3   SBC nn        SBC A,[nn]         SBC Zero Page     A=A+C-1-[D+nn]
+E3 nn       nzc--v      SBC nn,S      SBC A,[nn+S]                         A=A+C-1-[nn+S]
+F5 nn       nzc--v  4   SBC nn,X      SBC A,[nn+X]       SBC Zero Page,X   A=A+C-1-[D+nn+X]
+ED nn nn    nzc--v  4   SBC nnnn      SBC A,[nnnn]       SBC Absolute      A=A+C-1-[DB:nnnn]
+FD nn nn    nzc--v  4*  SBC nnnn,X    SBC A,[nnnn+X]     SBC Absolute,X    A=A+C-1-[DB:nnnn+X]
+F9 nn nn    nzc--v  4*  SBC nnnn,Y    SBC A,[nnnn+Y]     SBC Absolute,Y    A=A+C-1-[DB:nnnn+Y]
+EF nn nn nn nzc--v      SBC nnnnnn    SBC A,[nnnnnn]                       A=A+C-1-[nnnnnn]
+FF nn nn nn nzc--v      SBC nnnnnn,X  SBC A,[nnnnnn+X]                     A=A+C-1-[nnnnnn+X    ]
+38          --1---  2   SEC           STC                                  C=1    ;Set carry flag
+F8          ----1-  2   SED           STD                                  D=1    ;Set decimal mode
+78          ---1--  2   SEI           DI                                   I=1    ;Set interrupt disable bit
+E2 nn       xxxxxx  3   SEP #nn       SET P,nn                             P=P OR nn
+93 nn       ------      STA (nn,S),Y  MOV [[nn+S]+Y],A           m         [WORD[nn+S]+Y]=A
+81 nn       ------  6   STA (nn,X)    MOV [[nn+X]],A             m         [WORD[D+nn+X]]=A
+92 nn       ------      STA (nn)      MOV [[nn]],A               m         [WORD[D+nn]]=A
+91 nn       ------  6   STA (nn),Y    MOV [[nn]+Y],A             m         [WORD[D+nn]+Y]=A
+87 nn       ------      STA [nn]      MOV [FAR[nn]],A            m         [FAR[D+nn]]=A
+97 nn       ------      STA [nn],y    MOV [FAR[nn]+Y],A          m         [FAR[D+nn]+Y]=A
+85 nn       ------  3   STA nn        MOV [nn],A                 m         [D+nn]=A
+83 nn       ------      STA nn,S      MOV [nn+S],A               m         [nn+S]=A
+95 nn       ------  4   STA nn,X      MOV [nn+X],A               m         [D+nn+X]=A
+8D nn nn    ------  4   STA nnnn      MOV [nnnn],A               m         [DB:nnnn]=A
+9D nn nn    ------  5   STA nnnn,X    MOV [nnnn+X],A             m         [DB:nnnn+X]=A
+99 nn nn    ------  5   STA nnnn,Y    MOV [nnnn+Y],A             m         [DB:nnnn+Y]=A
+8F nn nn nn ------      STA nnnnnn    MOV [nnnnnn],A             m         [nnnnnn]=A
+9F nn nn nn ------      STA nnnnnn,X  MOV [nnnnnn+X],A           m         [nnnnnn+X]=A
+DB          ------  -   STP           KILL                                 ;STOP/KILL
+86 nn       ------  3   STX nn        MOV [nn],X                 x         [D+nn]=X
+96 nn       ------  4   STX nn,Y      MOV [nn+Y],X               x         [D+nn+Y]=X
+8E nn nn    ------  4   STX nnnn      MOV [nnnn],X               x         [DB:nnnn]=X
+84 nn       ------  3   STY nn        MOV [nn],Y                 x         [D+nn]=Y
+94 nn       ------  4   STY nn,X      MOV [nn+X],Y               x         [D+nn+X]=Y
+8C nn nn    ------  4   STY nnnn      MOV [nnnn],Y               x         [DB:nnnn]=Y
+64 nn       ------  3   STZ nn        MOV [nn],0                 m         [D+nn]=0
+74 nn       ------  4   STZ nn_x      MOV [nn+X],0               m         [D+nn+X]=0
+9C nn nn    ------  4   STZ nnnn      MOV [nnnn],0               m         [DB:nnnn]=0
+9E nn nn    ------  5   STZ nnnn_x    MOV [nnnn+X],0             m         [DB:nnnn+X]=0
+AA          nz----  2   TAX           MOV X,A                    x         X=A
+A8          nz----  2   TAY           MOV Y,A                    x         Y=A
+5B          nz----  2   TCD           MOV D,A                    16        D=A
+1B          ------  2   TCS           MOV SP,A  e?                         SP=A
+7B          nz----  2   TDC           MOV A,D                    16        A=D
+14 nn       -z----  5   TRB nn        CLR [nn],A                           ;\"TEST op,A" --> z
+1C nn nn    -z----  6   TRB nnnn      CLR [nnnn],A                         ;/then "AND op,NOT A"
+04 nn       -z----  5   TSB nn        SET [nn],A                           ;\"TEST op,A" --> z
+0C nn nn    -z----  6   TSB nnnn      SET [nnnn],A                         ;/then "OR op,A"
+3B          nz----  2   TSC           MOV A,SP                   16        A=SP
+BA          nz----  2   TSX           MOV X,S                    x         X=S
+8A          nz----  2   TXA           MOV A,X                    m         A=X
+9A          ------  2   TXS           MOV S,X                    e         S=X
+9B          nz----  2   TXY           MOV Y,X                    x         Y=X
+98          nz----  2   TYA           MOV A,Y                    m         A=Y
+BB          nz----  2   TYX           MOV X,Y                    x         X=Y
+CB          ------  3x  WAI           HALT                                 ;HALT
+42 nn               2   WDM #nn       NUL nn                               ;No operation
+EB          nz----  3   XBA           SWAP A                               ;A=B, B=A, NZ=LSB
+FB          --c---  2   XCE           XCE                                  C=E, E=C
