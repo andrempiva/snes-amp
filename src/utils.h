@@ -3,7 +3,7 @@
 #include <stdint.h>
 #include <stdio.h>
 
-#include "vrg.h"
+#include "lib/vrg.h"
 
 char* int_to_binary(unsigned int value, bool with_spaces);
 #ifdef TEST_INT_TO_BINARY
@@ -19,3 +19,8 @@ void print_512_bytes_from_file(FILE *file);
 
 uint16_t make_uint16(uint8_t high_byte, uint8_t low_byte);
 uint16_t get_uint16(uint8_t *address);
+
+bool is_bit_set(uint8_t value, uint8_t bit_index);
+uint8_t get_bit(uint8_t value, uint8_t bit_index);
+uint8_t set_bit(uint8_t value, uint8_t bit_index);
+uint8_t clear_bit(uint8_t value, uint8_t bit_index);

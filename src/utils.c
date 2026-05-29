@@ -110,3 +110,19 @@ inline uint16_t make_uint16(uint8_t high_byte, uint8_t low_byte) {
 inline uint16_t get_uint16(uint8_t *address) {
     return make_uint16(address[1], address[0]);
 }
+
+inline bool is_bit_set(uint8_t value, uint8_t bit_index) {
+    return (value & (1 << bit_index)) != 0;
+}
+
+inline uint8_t get_bit(uint8_t value, uint8_t bit_index) {
+    return (value & (1 << bit_index));
+}
+
+inline uint8_t set_bit(uint8_t value, uint8_t bit_index) {
+    return (value | (1 << bit_index)) & 0xFF;
+}
+
+inline uint8_t clear_bit(uint8_t value, uint8_t bit_index) {
+    return value & ~(1 << bit_index) & 0xFF;
+}
